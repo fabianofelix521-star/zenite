@@ -107,7 +107,10 @@ export default function Home() {
       <section className="px-4 lg:px-6 max-w-7xl mx-auto">
         <div className="relative rounded-2xl lg:rounded-3xl overflow-hidden aspect-[16/5] sm:aspect-[16/4]">
           <img
-            src={promoBanner.imageUrl || "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200&h=400&fit=crop"}
+            src={
+              promoBanner.imageUrl ||
+              "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200&h=400&fit=crop"
+            }
             alt={promoBanner.title || "Promoção"}
             className="w-full h-full object-cover"
           />
@@ -117,7 +120,8 @@ export default function Home() {
                 {promoBanner.title || "Coleção Verão 2025"}
               </h2>
               <p className="text-white/80 font-body text-sm sm:text-base max-w-md">
-                {promoBanner.subtitle || "Peças leves e coloridas para brilhar nesta temporada."}
+                {promoBanner.subtitle ||
+                  "Peças leves e coloridas para brilhar nesta temporada."}
               </p>
             </div>
           </div>

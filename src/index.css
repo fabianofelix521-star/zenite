@@ -216,6 +216,15 @@
     background: rgba(212, 175, 55, 0.5);
   }
 
+  /* Hide scrollbar utility */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Price highlight — gold */
   .price-tag {
     @apply text-primary font-bold tabular-nums;

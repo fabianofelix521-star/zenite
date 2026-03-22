@@ -407,9 +407,11 @@ export const useAdminStore = create<AdminStore>()(
         youtube: "",
       },
       promoBanner: {
-        imageUrl: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200&h=400&fit=crop",
+        imageUrl:
+          "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200&h=400&fit=crop",
         title: "Coleção Verão 2025",
-        subtitle: "Peças leves e coloridas para brilhar nesta temporada. Frescor e elegância em cada detalhe.",
+        subtitle:
+          "Peças leves e coloridas para brilhar nesta temporada. Frescor e elegância em cada detalhe.",
       },
 
       // --- Hydrate from Supabase ---
@@ -503,16 +505,14 @@ export const useAdminStore = create<AdminStore>()(
             }));
           } else {
             const defaults = get().footerLegalPages;
-            await supabase
-              .from("footer_legal_pages")
-              .upsert(
-                defaults.map((p, i) => ({
-                  id: p.id,
-                  title: p.title,
-                  content: p.content,
-                  sort_order: i,
-                })),
-              );
+            await supabase.from("footer_legal_pages").upsert(
+              defaults.map((p, i) => ({
+                id: p.id,
+                title: p.title,
+                content: p.content,
+                sort_order: i,
+              })),
+            );
           }
 
           set({ ...updates, isHydrated: true });

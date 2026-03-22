@@ -1,18 +1,26 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Search, ShoppingBag, Heart, Settings } from "lucide-react";
+import { Search, ShoppingBag, Heart, Settings, X } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 import { useSearch } from "@/hooks/useSearch";
 import { STORE_CONFIG } from "@/constants/config";
 import { useAdminStore } from "@/stores/adminStore";
+import { useAuthStore } from "@/stores/authStore";
 import SearchOverlay from "@/components/features/SearchOverlay";
 
 export default function Header() {
   const categories = useAdminStore((s) => s.categories);
   const [scrolled, setScrolled] = useState(false);
-  const { isOpen: searchOpen, setIsOpen: setSearchOpen } = useSearch();
+  const [searchExpanded, setSearchExpanded] = useState(false);
+  const {
+    isOpen: searchOpen,
+    setIsOpen: setSearchOpen,
+    query,
+    setQuery,
+  } = useSearch();
   const totalItems = useCartStore((s) => s.totalItems());
+  const isAdmin = useAuthStore((s) => s.isAdmin);
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
@@ -35,7 +43,7 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 lg:px-6">
           <div className="flex items-center justify-between h-14 lg:h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-1.5">
+            <Link to="/" className="flex items-center gap-1.5 shrink-0">
               <span className="font-display text-xl lg:text-2xl font-semibold text-gold-gradient tracking-tight">
                 {STORE_CONFIG.name}
               </span>
@@ -60,22 +68,68 @@ export default function Header() {
               </Link>
             </nav>
 
-            {/* Actions - desktop only, mobile uses floating nav */}
-            <div className="hidden lg:flex items-center gap-1">
+            {/* Search bar + Cart (all screens) */}
+            <div className="flex items-center gap-1.5 lg:gap-2">
+              {/* Mobile: collapsible search */}
+              <div className="flex lg:hidden items-center">
+                {searchExpanded ? (
+                  <motion.div
+                    initial={{ width: 0, opacity: 0 }}
+                    animate={{ width: "auto", opacity: 1 }}
+                    className="flex items-center"
+                  >
+                    <div className="relative">
+                      <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                      <input
+                        type="text"
+                        placeholder="Buscar..."
+                        autoFocus
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        onFocus={() => setSearchOpen(true)}
+                        className="w-36 pl-8 pr-2 py-2 rounded-xl border border-border bg-muted/50 text-sm font-body focus:outline-none focus:ring-2 focus:ring-gold-400/40"
+                      />
+                    </div>
+                    <button
+                      onClick={() => {
+                        setSearchExpanded(false);
+                        setQuery("");
+                      }}
+                      className="p-2 rounded-xl hover:bg-muted transition-colors ml-0.5"
+                    >
+                      <X className="size-4 text-foreground/50" />
+                    </button>
+                  </motion.div>
+                ) : (
+                  <button
+                    onClick={() => setSearchExpanded(true)}
+                    className="p-2.5 rounded-xl hover:bg-muted transition-colors"
+                    aria-label="Buscar"
+                  >
+                    <Search className="size-5 text-gold-600" />
+                  </button>
+                )}
+              </div>
+
+              {/* Desktop: search button opens overlay */}
               <button
                 onClick={() => setSearchOpen(true)}
-                className="p-2.5 rounded-xl hover:bg-muted transition-colors"
+                className="hidden lg:flex p-2.5 rounded-xl hover:bg-muted transition-colors"
                 aria-label="Buscar"
               >
                 <Search className="size-5 text-gold-600" />
               </button>
+
+              {/* Desktop extras */}
               <Link
                 to="/favoritos"
-                className="p-2.5 rounded-xl hover:bg-muted transition-colors"
+                className="hidden lg:flex p-2.5 rounded-xl hover:bg-muted transition-colors"
                 aria-label="Favoritos"
               >
                 <Heart className="size-5 text-gold-600" />
               </Link>
+
+              {/* Cart - visible on ALL screens */}
               <Link
                 to="/carrinho"
                 className="relative p-2.5 rounded-xl hover:bg-muted transition-colors"
@@ -92,13 +146,17 @@ export default function Header() {
                   </motion.span>
                 )}
               </Link>
-              <Link
-                to="/admin"
-                className="p-2.5 rounded-xl hover:bg-muted transition-colors"
-                aria-label="Admin"
-              >
-                <Settings className="size-5 text-gold-600" />
-              </Link>
+
+              {/* Admin link - desktop only, only for admins */}
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className="hidden lg:flex p-2.5 rounded-xl hover:bg-muted transition-colors"
+                  aria-label="Admin"
+                >
+                  <Settings className="size-5 text-gold-600" />
+                </Link>
+              )}
             </div>
           </div>
         </div>

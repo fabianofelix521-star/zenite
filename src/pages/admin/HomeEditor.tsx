@@ -232,7 +232,9 @@ export default function AdminHomeEditor() {
             <label className="block text-xs font-body font-medium text-gold-600 mb-1.5">
               Imagem
             </label>
-            <label className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-border cursor-pointer hover:bg-muted/50 transition-colors ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
+            <label
+              className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-border cursor-pointer hover:bg-muted/50 transition-colors ${uploading ? "opacity-50 pointer-events-none" : ""}`}
+            >
               {uploading ? (
                 <Loader2 className="size-4 text-gold-600 animate-spin" />
               ) : (

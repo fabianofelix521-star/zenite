@@ -1,9 +1,10 @@
 import { Suspense, lazy, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import AdminLayout from "@/components/layout/AdminLayout";
 import { Toaster } from "@/components/ui/toaster";
 import { useAdminStore } from "@/stores/adminStore";
+import { useAuthStore } from "@/stores/authStore";
 
 const Home = lazy(() => import("@/pages/Home"));
 const Products = lazy(() => import("@/pages/Products"));
@@ -17,6 +18,7 @@ const AdminProducts = lazy(() => import("@/pages/admin/Products"));
 const AdminCategories = lazy(() => import("@/pages/admin/Categories"));
 const AdminHomeEditor = lazy(() => import("@/pages/admin/HomeEditor"));
 const AdminSettings = lazy(() => import("@/pages/admin/Settings"));
+const Login = lazy(() => import("@/pages/Login"));
 
 function LoadingFallback() {
   return (
@@ -31,12 +33,21 @@ function LoadingFallback() {
   );
 }
 
+function AdminGuard({ children }: { children: React.ReactNode }) {
+  const { user, loading, isAdmin } = useAuthStore();
+  if (loading) return <LoadingFallback />;
+  if (!user || !isAdmin) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+}
+
 export default function App() {
   const hydrate = useAdminStore((s) => s.hydrate);
+  const initAuth = useAuthStore((s) => s.initialize);
 
   useEffect(() => {
     hydrate();
-  }, [hydrate]);
+    initAuth();
+  }, [hydrate, initAuth]);
 
   return (
     <BrowserRouter>
@@ -49,8 +60,16 @@ export default function App() {
             <Route path="/carrinho" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/favoritos" element={<Products />} />
+            <Route path="/login" element={<Login />} />
           </Route>
-          <Route path="/admin" element={<AdminLayout />}>
+          <Route
+            path="/admin"
+            element={
+              <AdminGuard>
+                <AdminLayout />
+              </AdminGuard>
+            }
+          >
             <Route index element={<AdminDashboard />} />
             <Route path="pedidos" element={<AdminOrders />} />
             <Route path="produtos" element={<AdminProducts />} />

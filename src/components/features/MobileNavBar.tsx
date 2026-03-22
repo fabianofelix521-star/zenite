@@ -1,27 +1,38 @@
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Home, ShoppingBag, Heart, Search, Settings, User } from "lucide-react";
+import { Home, ShoppingBag, Heart, Grid3X3, User } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
-import { useSearch } from "@/hooks/useSearch";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function MobileNavBar() {
   const location = useLocation();
   const totalItems = useCartStore((s) => s.totalItems());
-  const { setIsOpen: setSearchOpen } = useSearch();
+  const user = useAuthStore((s) => s.user);
 
   // Hide on product detail pages (FloatingBar is shown there instead)
   if (location.pathname.startsWith("/produto/")) return null;
   // Hide on admin pages
   if (location.pathname.startsWith("/admin")) return null;
+  // Hide on login page
+  if (location.pathname === "/login") return null;
 
   const isActive = (path: string) => location.pathname === path;
 
   const items = [
     { path: "/", icon: Home, label: "Início" },
-    { path: "search", icon: Search, label: "Buscar" },
-    { path: "/carrinho", icon: ShoppingBag, label: "Carrinho", badge: totalItems },
+    { path: "/produtos", icon: Grid3X3, label: "Categorias" },
+    {
+      path: "/carrinho",
+      icon: ShoppingBag,
+      label: "Carrinho",
+      badge: totalItems,
+    },
     { path: "/favoritos", icon: Heart, label: "Favoritos" },
-    { path: "/admin", icon: Settings, label: "Admin" },
+    {
+      path: user ? "/admin" : "/login",
+      icon: User,
+      label: user ? "Perfil" : "Entrar",
+    },
   ];
 
   return (
@@ -43,35 +54,14 @@ export default function MobileNavBar() {
         }}
       >
         {items.map((item) => {
-          const active = item.path === "search" ? false : isActive(item.path);
-
-          if (item.path === "search") {
-            return (
-              <button
-                key={item.path}
-                onClick={() => setSearchOpen(true)}
-                className="relative flex flex-col items-center justify-center w-14 h-11 rounded-2xl transition-all duration-200"
-                aria-label={item.label}
-              >
-                <item.icon
-                  className="size-[22px] text-foreground/50"
-                  strokeWidth={1.8}
-                />
-                <span className="text-[9px] font-body font-medium text-foreground/40 mt-0.5">
-                  {item.label}
-                </span>
-              </button>
-            );
-          }
+          const active = isActive(item.path);
 
           return (
             <Link
-              key={item.path}
+              key={item.path + item.label}
               to={item.path}
               className={`relative flex flex-col items-center justify-center w-14 h-11 rounded-2xl transition-all duration-200 ${
-                active
-                  ? "bg-gold-400/15"
-                  : ""
+                active ? "bg-gold-400/15" : ""
               }`}
               aria-label={item.label}
             >
