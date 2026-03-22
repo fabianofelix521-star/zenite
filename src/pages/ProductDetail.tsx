@@ -29,7 +29,10 @@ export default function ProductDetail() {
   const addItem = useCartStore((s) => s.addItem);
   const { toast } = useToast();
 
-  const product = useMemo(() => products.find((p) => p.slug === slug), [slug, products]);
+  const product = useMemo(
+    () => products.find((p) => p.slug === slug),
+    [slug, products],
+  );
 
   const [selectedSize, setSelectedSize] = useState(product?.sizes[0] || "");
   const [selectedColor, setSelectedColor] = useState(
@@ -40,9 +43,11 @@ export default function ProductDetail() {
 
   const related = useMemo(() => {
     if (!product) return [];
-    return products.filter(
-      (p) => p.categorySlug === product.categorySlug && p.id !== product.id,
-    ).slice(0, 4);
+    return products
+      .filter(
+        (p) => p.categorySlug === product.categorySlug && p.id !== product.id,
+      )
+      .slice(0, 4);
   }, [product]);
 
   if (!product) {

@@ -319,11 +319,51 @@ const DEFAULT_CATEGORIES: AdminCategory[] = [
 ];
 
 const DEFAULT_ORDERS: AdminOrder[] = [
-  { id: "ZEN-001", customer: "Maria Silva", email: "maria@email.com", status: "delivered", total: 459.9, items: 2, date: "2025-03-18" },
-  { id: "ZEN-002", customer: "João Santos", email: "joao@email.com", status: "shipped", total: 289.9, items: 1, date: "2025-03-19" },
-  { id: "ZEN-003", customer: "Ana Costa", email: "ana@email.com", status: "processing", total: 879.7, items: 3, date: "2025-03-20" },
-  { id: "ZEN-004", customer: "Pedro Lima", email: "pedro@email.com", status: "pending", total: 199.9, items: 1, date: "2025-03-21" },
-  { id: "ZEN-005", customer: "Carla Souza", email: "carla@email.com", status: "delivered", total: 1259.7, items: 4, date: "2025-03-17" },
+  {
+    id: "ZEN-001",
+    customer: "Maria Silva",
+    email: "maria@email.com",
+    status: "delivered",
+    total: 459.9,
+    items: 2,
+    date: "2025-03-18",
+  },
+  {
+    id: "ZEN-002",
+    customer: "João Santos",
+    email: "joao@email.com",
+    status: "shipped",
+    total: 289.9,
+    items: 1,
+    date: "2025-03-19",
+  },
+  {
+    id: "ZEN-003",
+    customer: "Ana Costa",
+    email: "ana@email.com",
+    status: "processing",
+    total: 879.7,
+    items: 3,
+    date: "2025-03-20",
+  },
+  {
+    id: "ZEN-004",
+    customer: "Pedro Lima",
+    email: "pedro@email.com",
+    status: "pending",
+    total: 199.9,
+    items: 1,
+    date: "2025-03-21",
+  },
+  {
+    id: "ZEN-005",
+    customer: "Carla Souza",
+    email: "carla@email.com",
+    status: "delivered",
+    total: 1259.7,
+    items: 4,
+    date: "2025-03-17",
+  },
 ];
 
 const DEFAULT_LEGAL_PAGES: FooterLegalPage[] = [
@@ -351,20 +391,35 @@ export const useAdminStore = create<AdminStore>()(
       isHydrated: false,
       footerLegalPages: DEFAULT_LEGAL_PAGES,
       footerContact: { email: "", phone: "", address: "" },
-      footerSocial: { instagram: "", facebook: "", twitter: "", tiktok: "", youtube: "" },
+      footerSocial: {
+        instagram: "",
+        facebook: "",
+        twitter: "",
+        tiktok: "",
+        youtube: "",
+      },
 
       // --- Hydrate from Supabase ---
       hydrate: async () => {
         try {
-          const [productsRes, categoriesRes, bannersRes, ordersRes, settingsRes, legalRes] =
-            await Promise.all([
-              supabase.from("products").select("*"),
-              supabase.from("categories").select("*"),
-              supabase.from("banners").select("*").order("sort_order"),
-              supabase.from("orders").select("*").order("created_at", { ascending: false }),
-              supabase.from("store_settings").select("*").single(),
-              supabase.from("footer_legal_pages").select("*").order("sort_order"),
-            ]);
+          const [
+            productsRes,
+            categoriesRes,
+            bannersRes,
+            ordersRes,
+            settingsRes,
+            legalRes,
+          ] = await Promise.all([
+            supabase.from("products").select("*"),
+            supabase.from("categories").select("*"),
+            supabase.from("banners").select("*").order("sort_order"),
+            supabase
+              .from("orders")
+              .select("*")
+              .order("created_at", { ascending: false }),
+            supabase.from("store_settings").select("*").single(),
+            supabase.from("footer_legal_pages").select("*").order("sort_order"),
+          ]);
 
           const updates: Partial<AdminStore> = {};
 
@@ -382,7 +437,9 @@ export const useAdminStore = create<AdminStore>()(
             updates.categories = categoriesRes.data.map(categoryFromDB);
           } else {
             const defaults = get().categories;
-            await supabase.from("categories").upsert(defaults.map(categoryToDB));
+            await supabase
+              .from("categories")
+              .upsert(defaults.map(categoryToDB));
           }
 
           // Banners
@@ -400,8 +457,13 @@ export const useAdminStore = create<AdminStore>()(
             const defaults = get().orders;
             await supabase.from("orders").upsert(
               defaults.map((o) => ({
-                id: o.id, customer: o.customer, email: o.email,
-                status: o.status, total: o.total, items: o.items, date: o.date,
+                id: o.id,
+                customer: o.customer,
+                email: o.email,
+                status: o.status,
+                total: o.total,
+                items: o.items,
+                date: o.date,
               })),
             );
           }
@@ -411,8 +473,10 @@ export const useAdminStore = create<AdminStore>()(
             const s = settingsRes.data;
             if (s.settings) updates.settings = s.settings as AdminSettings;
             if (s.logo_url) updates.logoUrl = s.logo_url;
-            if (s.footer_contact) updates.footerContact = s.footer_contact as FooterContact;
-            if (s.footer_social) updates.footerSocial = s.footer_social as FooterSocial;
+            if (s.footer_contact)
+              updates.footerContact = s.footer_contact as FooterContact;
+            if (s.footer_social)
+              updates.footerSocial = s.footer_social as FooterSocial;
           }
 
           // Legal pages
@@ -424,9 +488,16 @@ export const useAdminStore = create<AdminStore>()(
             }));
           } else {
             const defaults = get().footerLegalPages;
-            await supabase.from("footer_legal_pages").upsert(
-              defaults.map((p, i) => ({ id: p.id, title: p.title, content: p.content, sort_order: i })),
-            );
+            await supabase
+              .from("footer_legal_pages")
+              .upsert(
+                defaults.map((p, i) => ({
+                  id: p.id,
+                  title: p.title,
+                  content: p.content,
+                  sort_order: i,
+                })),
+              );
           }
 
           set({ ...updates, isHydrated: true });
@@ -440,7 +511,11 @@ export const useAdminStore = create<AdminStore>()(
       updateSettings: (partial) => {
         set((s) => {
           const merged = { ...s.settings, ...partial };
-          supabase.from("store_settings").update({ settings: merged, updated_at: new Date().toISOString() }).eq("id", 1).then();
+          supabase
+            .from("store_settings")
+            .update({ settings: merged, updated_at: new Date().toISOString() })
+            .eq("id", 1)
+            .then();
           return { settings: merged };
         });
       },
@@ -470,7 +545,11 @@ export const useAdminStore = create<AdminStore>()(
       // --- Logo ---
       setLogoUrl: (logoUrl) => {
         set({ logoUrl });
-        supabase.from("store_settings").update({ logo_url: logoUrl, updated_at: new Date().toISOString() }).eq("id", 1).then();
+        supabase
+          .from("store_settings")
+          .update({ logo_url: logoUrl, updated_at: new Date().toISOString() })
+          .eq("id", 1)
+          .then();
       },
 
       // --- Categories ---
@@ -480,7 +559,9 @@ export const useAdminStore = create<AdminStore>()(
       },
       updateCategory: (id, data) => {
         set((s) => ({
-          categories: s.categories.map((c) => (c.id === id ? { ...c, ...data } : c)),
+          categories: s.categories.map((c) =>
+            c.id === id ? { ...c, ...data } : c,
+          ),
         }));
         const row: Record<string, unknown> = {};
         if (data.name !== undefined) row.name = data.name;
@@ -500,10 +581,13 @@ export const useAdminStore = create<AdminStore>()(
       },
       updateProduct: (id, data) => {
         set((s) => ({
-          products: s.products.map((p) => (p.id === id ? { ...p, ...data } : p)),
+          products: s.products.map((p) =>
+            p.id === id ? { ...p, ...data } : p,
+          ),
         }));
         const updated = get().products.find((p) => p.id === id);
-        if (updated) supabase.from("products").upsert(productToDB(updated)).then();
+        if (updated)
+          supabase.from("products").upsert(productToDB(updated)).then();
       },
       removeProduct: (id) => {
         set((s) => ({ products: s.products.filter((p) => p.id !== id) }));
@@ -525,11 +609,21 @@ export const useAdminStore = create<AdminStore>()(
       // --- Footer ---
       addLegalPage: (page) => {
         set((s) => ({ footerLegalPages: [...s.footerLegalPages, page] }));
-        supabase.from("footer_legal_pages").upsert({ id: page.id, title: page.title, content: page.content, sort_order: get().footerLegalPages.length }).then();
+        supabase
+          .from("footer_legal_pages")
+          .upsert({
+            id: page.id,
+            title: page.title,
+            content: page.content,
+            sort_order: get().footerLegalPages.length,
+          })
+          .then();
       },
       updateLegalPage: (id, data) => {
         set((s) => ({
-          footerLegalPages: s.footerLegalPages.map((p) => (p.id === id ? { ...p, ...data } : p)),
+          footerLegalPages: s.footerLegalPages.map((p) =>
+            p.id === id ? { ...p, ...data } : p,
+          ),
         }));
         const row: Record<string, unknown> = {};
         if (data.title !== undefined) row.title = data.title;
@@ -537,20 +631,36 @@ export const useAdminStore = create<AdminStore>()(
         supabase.from("footer_legal_pages").update(row).eq("id", id).then();
       },
       removeLegalPage: (id) => {
-        set((s) => ({ footerLegalPages: s.footerLegalPages.filter((p) => p.id !== id) }));
+        set((s) => ({
+          footerLegalPages: s.footerLegalPages.filter((p) => p.id !== id),
+        }));
         supabase.from("footer_legal_pages").delete().eq("id", id).then();
       },
       updateFooterContact: (data) => {
         set((s) => {
           const merged = { ...s.footerContact, ...data };
-          supabase.from("store_settings").update({ footer_contact: merged, updated_at: new Date().toISOString() }).eq("id", 1).then();
+          supabase
+            .from("store_settings")
+            .update({
+              footer_contact: merged,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", 1)
+            .then();
           return { footerContact: merged };
         });
       },
       updateFooterSocial: (data) => {
         set((s) => {
           const merged = { ...s.footerSocial, ...data };
-          supabase.from("store_settings").update({ footer_social: merged, updated_at: new Date().toISOString() }).eq("id", 1).then();
+          supabase
+            .from("store_settings")
+            .update({
+              footer_social: merged,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", 1)
+            .then();
           return { footerSocial: merged };
         });
       },

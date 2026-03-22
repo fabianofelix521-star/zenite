@@ -44,7 +44,8 @@ export default function AdminProducts() {
 
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<EditingProduct>(emptyProduct());
+  const [editingProduct, setEditingProduct] =
+    useState<EditingProduct>(emptyProduct());
   const [uploading, setUploading] = useState(false);
 
   const filtered = products.filter(
@@ -72,7 +73,8 @@ export default function AdminProducts() {
         ...editingProduct,
         id: crypto.randomUUID(),
         slug: editingProduct.slug || slugify(editingProduct.name),
-        categorySlug: editingProduct.categorySlug || slugify(editingProduct.category),
+        categorySlug:
+          editingProduct.categorySlug || slugify(editingProduct.category),
         createdAt: new Date().toISOString(),
       });
     }
@@ -352,7 +354,10 @@ export default function AdminProducts() {
                     onChange={(e) =>
                       setEditingProduct((p) => ({
                         ...p,
-                        sizes: e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
+                        sizes: e.target.value
+                          .split(",")
+                          .map((s) => s.trim())
+                          .filter(Boolean),
                       }))
                     }
                     className="w-full px-4 py-2.5 rounded-2xl glass-card text-sm font-body text-foreground focus:outline-none focus:ring-1 focus:ring-gold-400/30"
@@ -369,7 +374,10 @@ export default function AdminProducts() {
                     onChange={(e) =>
                       setEditingProduct((p) => ({
                         ...p,
-                        tags: e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
+                        tags: e.target.value
+                          .split(",")
+                          .map((s) => s.trim())
+                          .filter(Boolean),
                       }))
                     }
                     className="w-full px-4 py-2.5 rounded-2xl glass-card text-sm font-body text-foreground focus:outline-none focus:ring-1 focus:ring-gold-400/30"
@@ -384,11 +392,17 @@ export default function AdminProducts() {
                   id="featured"
                   checked={editingProduct.featured}
                   onChange={(e) =>
-                    setEditingProduct((p) => ({ ...p, featured: e.target.checked }))
+                    setEditingProduct((p) => ({
+                      ...p,
+                      featured: e.target.checked,
+                    }))
                   }
                   className="rounded accent-gold-600"
                 />
-                <label htmlFor="featured" className="text-sm font-body text-foreground">
+                <label
+                  htmlFor="featured"
+                  className="text-sm font-body text-foreground"
+                >
                   Produto em Destaque
                 </label>
               </div>
@@ -423,7 +437,9 @@ export default function AdminProducts() {
                     ))}
                   </div>
                 )}
-                <label className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-border cursor-pointer hover:bg-muted/50 transition-colors ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
+                <label
+                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-border cursor-pointer hover:bg-muted/50 transition-colors ${uploading ? "opacity-50 pointer-events-none" : ""}`}
+                >
                   {uploading ? (
                     <Loader2 className="size-4 text-gold-600 animate-spin" />
                   ) : (

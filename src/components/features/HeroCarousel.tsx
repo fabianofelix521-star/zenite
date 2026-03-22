@@ -1,15 +1,24 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useAdminStore } from '@/stores/adminStore';
+import { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useAdminStore } from "@/stores/adminStore";
 
 export default function HeroCarousel() {
   const banners = useAdminStore((s) => s.banners);
   const [current, setCurrent] = useState(0);
 
-  const next = useCallback(() => setCurrent((c) => (c + 1) % (banners.length || 1)), [banners.length]);
-  const prev = useCallback(() => setCurrent((c) => (c - 1 + (banners.length || 1)) % (banners.length || 1)), [banners.length]);
+  const next = useCallback(
+    () => setCurrent((c) => (c + 1) % (banners.length || 1)),
+    [banners.length],
+  );
+  const prev = useCallback(
+    () =>
+      setCurrent(
+        (c) => (c - 1 + (banners.length || 1)) % (banners.length || 1),
+      ),
+    [banners.length],
+  );
 
   useEffect(() => {
     const interval = setInterval(next, 5000);
@@ -98,7 +107,7 @@ export default function HeroCarousel() {
               key={i}
               onClick={() => setCurrent(i)}
               className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === current ? 'w-6 bg-white' : 'w-1.5 bg-white/50'
+                i === current ? "w-6 bg-white" : "w-1.5 bg-white/50"
               }`}
               aria-label={`Banner ${i + 1}`}
             />

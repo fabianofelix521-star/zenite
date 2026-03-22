@@ -8,7 +8,10 @@ import { useAdminStore } from "@/stores/adminStore";
 
 export default function Home() {
   const products = useAdminStore((s) => s.products);
-  const featured = useMemo(() => products.filter((p) => p.featured), [products]);
+  const featured = useMemo(
+    () => products.filter((p) => p.featured),
+    [products],
+  );
   const trending = useMemo(
     () => [...products].sort((a, b) => b.soldCount - a.soldCount).slice(0, 8),
     [products],

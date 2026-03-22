@@ -18,12 +18,14 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const results = useMemo(() => {
     if (!query.trim() || query.length < 2) return [];
     const q = query.toLowerCase();
-    return products.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.category.toLowerCase().includes(q) ||
-        p.tags.some((t) => t.includes(q)),
-    ).slice(0, 6);
+    return products
+      .filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q) ||
+          p.tags.some((t) => t.includes(q)),
+      )
+      .slice(0, 6);
   }, [query]);
 
   const handleSubmit = (e: React.FormEvent) => {

@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { useAdminStore } from '@/stores/adminStore';
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useAdminStore } from "@/stores/adminStore";
 
 export default function CategoryGrid() {
   const categories = useAdminStore((s) => s.categories);
@@ -9,10 +9,17 @@ export default function CategoryGrid() {
     <section>
       <div className="flex items-end justify-between mb-6">
         <div>
-          <h2 className="font-display text-2xl lg:text-3xl font-semibold text-foreground">Categorias</h2>
-          <p className="text-sm text-muted-foreground font-body mt-1">Encontre seu estilo</p>
+          <h2 className="font-display text-2xl lg:text-3xl font-semibold text-foreground">
+            Categorias
+          </h2>
+          <p className="text-sm text-muted-foreground font-body mt-1">
+            Encontre seu estilo
+          </p>
         </div>
-        <Link to="/produtos" className="text-sm font-body font-medium text-primary hover:underline">
+        <Link
+          to="/produtos"
+          className="text-sm font-body font-medium text-primary hover:underline"
+        >
           Ver tudo →
         </Link>
       </div>
@@ -36,7 +43,9 @@ export default function CategoryGrid() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-3 lg:p-4">
-                <h3 className="font-display text-sm lg:text-base font-semibold text-white">{cat.name}</h3>
+                <h3 className="font-display text-sm lg:text-base font-semibold text-white">
+                  {cat.name}
+                </h3>
               </div>
             </Link>
           </motion.div>

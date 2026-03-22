@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ShoppingBag, Menu, X, Heart, User } from "lucide-react";
+import { Search, ShoppingBag, Menu, X, Heart, Settings } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 import { useSearch } from "@/hooks/useSearch";
 import { STORE_CONFIG } from "@/constants/config";
@@ -110,6 +110,13 @@ export default function Header() {
                     {totalItems > 9 ? "9+" : totalItems}
                   </motion.span>
                 )}
+              </Link>
+              <Link
+                to="/admin"
+                className="p-2.5 rounded-xl hover:bg-muted transition-colors"
+                aria-label="Admin"
+              >
+                <Settings className="size-5 text-gold-600" />
               </Link>
             </div>
           </div>
