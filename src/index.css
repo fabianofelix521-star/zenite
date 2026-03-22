@@ -1,0 +1,237 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.75rem;
+
+    /* Zênite — Light Theme with Gold Accents */
+    --background: 0 0% 100%;
+    --foreground: 220 20% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 15%;
+
+    --primary: 43 56% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 20% 25%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+
+    --accent: 43 65% 52%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 43 56% 55%;
+
+    --chart-1: 43 56% 55%;
+    --chart-2: 215 60% 50%;
+    --chart-3: 43 40% 70%;
+    --chart-4: 190 60% 50%;
+    --chart-5: 150 50% 45%;
+
+    --sidebar-background: 220 14% 98%;
+    --sidebar-foreground: 220 20% 15%;
+    --sidebar-primary: 43 56% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 95%;
+    --sidebar-accent-foreground: 220 20% 25%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 43 56% 55%;
+
+    /* Custom brand tokens — Zênite */
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(0, 0, 0, 0.06);
+    --glass-highlight: rgba(255, 255, 255, 0.9);
+    --glass-shadow: rgba(0, 0, 0, 0.06);
+    --gold: #d4af37;
+    --gold-light: #e8c670;
+    --gold-dark: #c5a055;
+    --deep-blue: #0a1428;
+    --navy: #001f3f;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    min-height: 100vh;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display;
+  }
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+@layer components {
+  /* Liquid Glass — Zênite light luxury */
+  .glass {
+    background: white;
+    border: 1px solid hsl(var(--border));
+    box-shadow:
+      0 1px 3px 0 rgba(0, 0, 0, 0.04),
+      0 1px 2px -1px rgba(0, 0, 0, 0.04);
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+  }
+
+  .glass::before {
+    content: none;
+  }
+
+  .glass-strong {
+    background: white;
+    border: 1px solid hsl(var(--border));
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.05),
+      0 2px 4px -2px rgba(0, 0, 0, 0.04);
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+  }
+
+  .glass-strong::before {
+    content: none;
+  }
+
+  .glass-card {
+    background: white;
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+    border-radius: 24px;
+  }
+
+  .glass-card:hover {
+    box-shadow:
+      0 4px 12px -2px rgba(0, 0, 0, 0.08),
+      0 0 0 1px rgba(212, 175, 55, 0.08);
+    transform: translateY(-1px);
+  }
+
+  /* Gold glow effect for special elements */
+  .gold-glow {
+    box-shadow:
+      0 0 20px -4px rgba(212, 175, 55, 0.3),
+      0 0 40px -8px rgba(212, 175, 55, 0.15);
+  }
+
+  .text-gold {
+    color: var(--gold);
+  }
+
+  .text-gold-gradient {
+    background: linear-gradient(135deg, #c5a055, #d4af37, #e8c670);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .border-gold {
+    border-color: rgba(212, 175, 55, 0.3);
+  }
+
+  .bg-gold {
+    background: linear-gradient(135deg, #c5a055, #d4af37);
+  }
+
+  /* Refraction highlight effect — gold-tinted */
+  .refraction {
+    position: relative;
+  }
+
+  .refraction::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background:
+      radial-gradient(
+        ellipse at 30% 20%,
+        rgba(212, 175, 55, 0.08) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        ellipse at 70% 80%,
+        rgba(232, 198, 112, 0.05) 0%,
+        transparent 40%
+      );
+    pointer-events: none;
+    animation: refraction-shift 8s ease-in-out infinite;
+  }
+
+  @keyframes refraction-shift {
+    0%,
+    100% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+    33% {
+      transform: translate(2%, -1%) rotate(1deg);
+    }
+    66% {
+      transform: translate(-1%, 2%) rotate(-0.5deg);
+    }
+  }
+
+  /* Scrollbar — light luxury */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(212, 175, 55, 0.3);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(212, 175, 55, 0.5);
+  }
+
+  /* Price highlight — gold */
+  .price-tag {
+    @apply text-primary font-bold tabular-nums;
+  }
+
+  /* Floating bar safe area */
+  .pb-floating {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
