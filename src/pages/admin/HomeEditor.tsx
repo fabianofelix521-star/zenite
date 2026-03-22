@@ -6,10 +6,12 @@ import { uploadImage } from "@/lib/uploadImage";
 export default function AdminHomeEditor() {
   const banners = useAdminStore((s) => s.banners);
   const logoUrl = useAdminStore((s) => s.logoUrl);
+  const promoBanner = useAdminStore((s) => s.promoBanner);
   const addBanner = useAdminStore((s) => s.addBanner);
   const removeBanner = useAdminStore((s) => s.removeBanner);
   const updateBanner = useAdminStore((s) => s.updateBanner);
   const setLogoUrl = useAdminStore((s) => s.setLogoUrl);
+  const updatePromoBanner = useAdminStore((s) => s.updatePromoBanner);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Partial<Banner> & { isNew?: boolean }>(
@@ -186,6 +188,80 @@ export default function AdminHomeEditor() {
             ? "Com apenas 1 banner, ele será exibido de forma estática (sem carrossel)."
             : `${banners.length} banners exibidos em carrossel na home.`}
         </p>
+      </div>
+
+      {/* Promo Banner Section */}
+      <div className="glass-card p-5">
+        <h3 className="text-base font-display font-semibold text-gold-600 mb-4">
+          Banner Promocional
+        </h3>
+        <p className="text-xs text-muted-foreground font-body mb-4">
+          Banner exibido entre as seções de produtos na home.
+        </p>
+        {promoBanner.imageUrl && (
+          <img
+            src={promoBanner.imageUrl}
+            alt="Preview promo"
+            className="w-full h-32 object-cover rounded-xl mb-3"
+          />
+        )}
+        <div className="space-y-3">
+          <div>
+            <label className="block text-xs font-body font-medium text-gold-600 mb-1.5">
+              Título
+            </label>
+            <input
+              type="text"
+              value={promoBanner.title}
+              onChange={(e) => updatePromoBanner({ title: e.target.value })}
+              className="w-full px-4 py-2.5 rounded-2xl glass-card text-sm font-body text-foreground focus:outline-none focus:ring-1 focus:ring-gold-400/30"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-body font-medium text-gold-600 mb-1.5">
+              Subtítulo
+            </label>
+            <textarea
+              value={promoBanner.subtitle}
+              onChange={(e) => updatePromoBanner({ subtitle: e.target.value })}
+              rows={2}
+              className="w-full px-4 py-2.5 rounded-2xl glass-card text-sm font-body text-foreground focus:outline-none focus:ring-1 focus:ring-gold-400/30 resize-none"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-body font-medium text-gold-600 mb-1.5">
+              Imagem
+            </label>
+            <label className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-border cursor-pointer hover:bg-muted/50 transition-colors ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
+              {uploading ? (
+                <Loader2 className="size-4 text-gold-600 animate-spin" />
+              ) : (
+                <Upload className="size-4 text-gold-600" />
+              )}
+              <span className="text-sm font-body text-muted-foreground">
+                {uploading ? "Enviando..." : "Trocar imagem"}
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setUploading(true);
+                  try {
+                    const url = await uploadImage(file, "promo");
+                    updatePromoBanner({ imageUrl: url });
+                  } catch (err) {
+                    console.error("Upload failed:", err);
+                  } finally {
+                    setUploading(false);
+                  }
+                }}
+                className="hidden"
+              />
+            </label>
+          </div>
+        </div>
       </div>
 
       {/* Banner Modal */}

@@ -66,6 +66,12 @@ export interface FooterSocial {
   youtube: string;
 }
 
+export interface PromoBanner {
+  imageUrl: string;
+  title: string;
+  subtitle: string;
+}
+
 interface AdminStore {
   products: Product[];
   settings: AdminSettings;
@@ -95,6 +101,8 @@ interface AdminStore {
   removeLegalPage: (id: string) => void;
   updateFooterContact: (data: Partial<FooterContact>) => void;
   updateFooterSocial: (data: Partial<FooterSocial>) => void;
+  promoBanner: PromoBanner;
+  updatePromoBanner: (data: Partial<PromoBanner>) => void;
   hydrate: () => Promise<void>;
 }
 
@@ -398,6 +406,11 @@ export const useAdminStore = create<AdminStore>()(
         tiktok: "",
         youtube: "",
       },
+      promoBanner: {
+        imageUrl: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200&h=400&fit=crop",
+        title: "Coleção Verão 2025",
+        subtitle: "Peças leves e coloridas para brilhar nesta temporada. Frescor e elegância em cada detalhe.",
+      },
 
       // --- Hydrate from Supabase ---
       hydrate: async () => {
@@ -477,6 +490,8 @@ export const useAdminStore = create<AdminStore>()(
               updates.footerContact = s.footer_contact as FooterContact;
             if (s.footer_social)
               updates.footerSocial = s.footer_social as FooterSocial;
+            if (s.promo_banner)
+              updates.promoBanner = s.promo_banner as PromoBanner;
           }
 
           // Legal pages
@@ -648,6 +663,20 @@ export const useAdminStore = create<AdminStore>()(
             .eq("id", 1)
             .then();
           return { footerContact: merged };
+        });
+      },
+      updatePromoBanner: (data) => {
+        set((s) => {
+          const merged = { ...s.promoBanner, ...data };
+          supabase
+            .from("store_settings")
+            .update({
+              promo_banner: merged,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", 1)
+            .then();
+          return { promoBanner: merged };
         });
       },
       updateFooterSocial: (data) => {

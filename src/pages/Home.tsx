@@ -8,6 +8,7 @@ import { useAdminStore } from "@/stores/adminStore";
 
 export default function Home() {
   const products = useAdminStore((s) => s.products);
+  const promoBanner = useAdminStore((s) => s.promoBanner);
   const featured = useMemo(
     () => products.filter((p) => p.featured),
     [products],
@@ -106,18 +107,17 @@ export default function Home() {
       <section className="px-4 lg:px-6 max-w-7xl mx-auto">
         <div className="relative rounded-2xl lg:rounded-3xl overflow-hidden aspect-[16/5] sm:aspect-[16/4]">
           <img
-            src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200&h=400&fit=crop"
-            alt="Coleção verão"
+            src={promoBanner.imageUrl || "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200&h=400&fit=crop"}
+            alt={promoBanner.title || "Promoção"}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/70 via-primary/30 to-transparent flex items-center">
             <div className="px-6 sm:px-10 lg:px-16">
               <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 text-balance">
-                Coleção Verão 2025
+                {promoBanner.title || "Coleção Verão 2025"}
               </h2>
               <p className="text-white/80 font-body text-sm sm:text-base max-w-md">
-                Peças leves e coloridas para brilhar nesta temporada. Frescor e
-                elegância em cada detalhe.
+                {promoBanner.subtitle || "Peças leves e coloridas para brilhar nesta temporada."}
               </p>
             </div>
           </div>
